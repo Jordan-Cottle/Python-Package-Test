@@ -54,6 +54,9 @@ class Config:
             try:
                 curr = curr[key]
             except KeyError:
-                curr = curr[key] = {}
+                curr[key] = {}
+                curr = curr[key]
 
         curr[keys[-1]] = value
+
+        self.get.cache_clear()
