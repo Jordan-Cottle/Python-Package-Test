@@ -136,3 +136,15 @@ def test_custom_separator(config):
     assert (
         config.get("test/spam") is None
     ), "Config should no longer recognize default path separator"
+
+
+def test_reload(config):
+    # Set foo in get cache
+    assert config.get("foo") is None
+
+    # Reload config to actually add foo
+    mock = mock_open(read_data="foo: bar")
+    with patch("config.configuration.open", mock):
+        config.reload()
+
+    assert config.get("foo") == "bar", "new value of foo should be available"

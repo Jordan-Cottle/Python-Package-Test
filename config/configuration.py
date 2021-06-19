@@ -27,6 +27,7 @@ class Config:
         """Reload the file and update the data in this Config."""
 
         self.data = load_yaml(self.file_name)
+        self.get.cache_clear()
 
     def __getitem__(self, key):
         value = self.get(key, NO_VALUE)
