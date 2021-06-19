@@ -123,3 +123,16 @@ def test_set_with_normal_dict_syntax(config):
     ), "Path sections should not be combined in the data dict"
 
     assert config["exists/now"] == "yay"
+
+
+def test_custom_separator(config):
+    """Ensure custom separators work as expected."""
+    config.separator = "."
+
+    config.set("path.test", "yay")
+    assert config.data["path"]["test"] == "yay"
+    assert config.get("path.test") == "yay"
+
+    assert (
+        config.get("test/spam") is None
+    ), "Config should no longer recognize default path separator"
