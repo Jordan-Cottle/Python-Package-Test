@@ -81,12 +81,45 @@ def test_get_with_normal_dict_syntax(config):
     assert config["top"] == "key"
 
 
-def test_set_with_normal_dict_syntax(config):
+def test_get_error_with_normal_dict_syntax(config):
     """Test that the config can behave like a normal dict."""
 
     with pytest.raises(KeyError):
         config["does_not_exist"]
 
-    config["exists"] = "now"
 
+def test_multikey_get_with_normal_dict_syntax(config):
+    """Test that the config can use __getitem__ syntax like a normal dict for multikey requests."""
+
+    assert config["test/spam"] == "eggs"
+
+
+def test_multikey_get_keyerror_with_normal_dict_syntax(config):
+    """Test that the config can use __getitem__ syntax like a normal dict for multikey requests."""
+
+    with pytest.raises(KeyError):
+        config["not/there"]
+
+
+def test_set_with_normal_dict_syntax(config):
+    """Test that the config can behave like a normal dict."""
+
+    assert "exists" not in config.data
+    config["exists"] = "now"
     assert config.data["exists"] == "now"
+
+
+def test_set_with_normal_dict_syntax(config):
+    """Test that the config can behave like a normal dict."""
+
+    assert "exists" not in config.data
+    assert "exists/now" not in config.data
+
+    config["exists/now"] = "yay"
+
+    assert config.data["exists"] == {"now": "yay"}
+    assert (
+        "exists/now" not in config.data
+    ), "Path sections should not be combined in the data dict"
+
+    assert config["exists/now"] == "yay"

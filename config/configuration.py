@@ -3,6 +3,8 @@
 import yaml
 from methodtools import lru_cache
 
+NO_VALUE = "__config_no_value__"
+
 
 def load_yaml(file_name):
     """Utility for safely loading a yaml file."""
@@ -27,10 +29,15 @@ class Config:
         self.data = load_yaml(self.file_name)
 
     def __getitem__(self, key):
-        return self.data[key]
+        value = self.get(key, NO_VALUE)
+
+        if value == NO_VALUE:
+            raise KeyError(key)
+
+        return value
 
     def __setitem__(self, key, value):
-        self.data[key] = value
+        self.set(key, value)
 
     @lru_cache()
     def get(self, path, default=None):
